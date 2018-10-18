@@ -31,3 +31,4 @@ localhost:3000/api/private GET
 2) In the terminal go to the project and type npm install, after
 3) type node server.js
 4) you can use and open Postman to test apis url or endpoints
+

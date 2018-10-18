@@ -27,11 +27,57 @@ exports.create = (req, res) => {
 };
 
 // Sign in the user
-exports.signIn = (res, req) => {
-    User.find({
-        username: req.body.username,
-        password: req.body.password
-    }, (err, user)=>{
+exports.signIn = (req, res)=>{
+    var username = req.body.username
+    
+    /*User.findOne({username: username}), (err, user) => {
+
+        if(err){ 
+            return res.status(500).send({message: err})
+        }
+        if(!user) return res.status(404).send({message: 'No existe'})
+
+        req.user = user
+        res.status(200).send({
+            message: 'te has logueado bien.'
+        })
+    }*/
+
+    /*User.findOne({username: username}, (err, user) => {
+        if (err) return res.status(500).send({ message: `Error al realizar la petición ${err}`});
+
+        if (!user) return res.status(404).send({ message: 'Usuario no registrado' });
+        
+        const password_verification =  bcrypt.compareSync(req.body.password, user.password);        
+        
+        if(password_verification){
+         req.user = user;
+         res.status(200).send({message: 'Te has logueado correctamente', token: Jwt.createToken(user, req.body.username)});
+        }else{
+         res.status(500).send({message: 'Email o Contraseña incorrectos'});  
+        }
+    });*/
+
+    
+    User.findOne({username: req.body.username})
+    .then(user => {
+        if(!user) {
+            return res.status(404).send({
+                message: "User not found with username: " + req.params.username
+            });            
+        }
+        res.send({
+            message: "You are loggin",
+            token: Jwt.createToken(user)
+        });
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving users."
+        });
+    })
+    
+    
+    /*.find({ username: req.body.username},(err, user)=>{
         if(err) return res.status(500).send({ message: err })
         if(!user) return res.status(404).send({ message: "the user doesn't exists" })
 
@@ -40,7 +86,7 @@ exports.signIn = (res, req) => {
             message: "You are loggin",
             token: Jwt.createToken(user)
         })
-    });
+    });*/
 
 }
 
